@@ -57,7 +57,7 @@ export default class Result extends Component {
       const candidateCount = await this.state.ElectionInstance.methods
         .getTotalCandidate()
         .call();
-      this.setState({ candidateCount: candidateCount });
+      this.setState({ candidateCount: Number(candidateCount) });
 
       // Get start and end values
       const start = await this.state.ElectionInstance.methods.getStart().call();
@@ -71,10 +71,10 @@ export default class Result extends Component {
           .candidateDetails(i - 1)
           .call();
         this.state.candidates.push({
-          id: candidate.candidateId,
+          id: Number(candidate.candidateId),
           header: candidate.header,
           slogan: candidate.slogan,
-          voteCount: candidate.voteCount,
+          voteCount: Number(candidate.voteCount),
         });
       }
 

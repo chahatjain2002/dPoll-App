@@ -52,7 +52,7 @@ export default class Registration extends Component {
       const candidateCount = await this.state.ElectionInstance.methods
         .getTotalCandidate()
         .call();
-      this.setState({ candidateCount: candidateCount });
+      this.setState({ candidateCount: Number(candidateCount) });
 
       // Admin account and verification
       const admin = await this.state.ElectionInstance.methods.getAdmin().call();
@@ -63,15 +63,19 @@ export default class Registration extends Component {
       const voterCount = await this.state.ElectionInstance.methods
         .getTotalVoter()
         .call();
-      this.setState({ voterCount: voterCount });
+        this.state.voterCount = Number(voterCount);
+        
+      
       // Loading all the voters
-      for (let i = 0; i < this.state.voterCount; i++) {
+      for (let index = 0; index < this.state.voterCount; index++) {
         const voterAddress = await this.state.ElectionInstance.methods
-          .voters(i)
+          .voters(index)
           .call();
+          
         const voter = await this.state.ElectionInstance.methods
           .voterDetails(voterAddress)
           .call();
+          
         this.state.voters.push({
           address: voter.voterAddress,
           name: voter.name,

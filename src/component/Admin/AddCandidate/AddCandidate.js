@@ -24,6 +24,7 @@ export default class AddCandidate extends Component {
       candidateCount: undefined,
     };
   }
+  
 
   componentDidMount = async () => {
     // refreshing page only once
@@ -58,24 +59,28 @@ export default class AddCandidate extends Component {
       const candidateCount = await this.state.ElectionInstance.methods
         .getTotalCandidate()
         .call();
-      this.setState({ candidateCount: candidateCount });
-
+      this.setState({ candidateCount: Number(candidateCount) });
+      
       const admin = await this.state.ElectionInstance.methods.getAdmin().call();
       if (this.state.account === admin) {
         this.setState({ isAdmin: true });
       }
 
       // Loading Candidates details
-      for (let i = 0; i < this.state.candidateCount; i++) {
+      for (let index = 0; index < this.state.candidateCount; index++) {
+        
         const candidate = await this.state.ElectionInstance.methods
-          .candidateDetails(i)
+          .candidateDetails(index)
           .call();
+          
         this.state.candidates.push({
-          id: candidate.candidateId,
+          id: Number(candidate.candidateId),
           header: candidate.header,
           slogan: candidate.slogan,
         });
       }
+      console.log(this.state.candidates);
+      
 
       this.setState({ candidates: this.state.candidates });
     } catch (error) {

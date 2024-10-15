@@ -84,8 +84,7 @@ export default class Voting extends Component {
           .call();
         this.state.candidates.push({
           id: candidate.candidateId,
-          header: candidate.header,
-          slogan: candidate.slogan,
+          choice: candidate.choice,
         });
       }
       this.setState({ candidates: this.state.candidates });
@@ -126,9 +125,9 @@ export default class Voting extends Component {
         .send({ from: this.state.account, gas: 1000000 });
       window.location.reload();
     };
-    const confirmVote = (id, header) => {
+    const confirmVote = (id, choice) => {
       var r = window.confirm(
-        "Vote for " + header + " with Id " + id + ".\nAre you sure?"
+        "Vote for " + choice + " with Id " + id + ".\nAre you sure?"
       );
       if (r === true) {
         castVote(id);
@@ -138,13 +137,13 @@ export default class Voting extends Component {
       <div className="container-item">
         <div className="candidate-info">
           <h2>
-            {candidate.header} <small>#{candidate.id}</small>
+            {candidate.choice} <small>#{candidate.id}</small>
           </h2>
-          <p className="slogan">{candidate.slogan}</p>
+          {/* <p className="slogan">{candidate.slogan}</p> */}
         </div>
         <div className="vote-btn-container">
           <button
-            onClick={() => confirmVote(candidate.id, candidate.header)}
+            onClick={() => confirmVote(candidate.id, candidate.choice)}
             className="vote-bth"
             disabled={
               !this.state.currentVoter.isRegistered ||
@@ -224,8 +223,9 @@ export default class Voting extends Component {
                 </>
               )}
               <div className="container-main">
-                <h2>Candidates</h2>
-                <small>Total candidates: {this.state.candidates.length}</small>
+                <h2>UKIA Annual Fiesta Poll</h2>
+                <h2 hidden>Candidates</h2>
+                <small hidden>Total candidates: {this.state.candidates.length}</small>
                 {this.state.candidates.length < 1 ? (
                   <div className="container-item attention">
                     <center>Not one to vote for.</center>
@@ -247,7 +247,7 @@ export default class Voting extends Component {
             <>
               <div className="container-item attention">
                 <center>
-                  <h3>The Election ended.</h3>
+                  <h3>The Event ended.</h3>
                   <br />
                   <Link
                     to="/Results"

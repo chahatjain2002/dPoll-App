@@ -72,8 +72,7 @@ export default class Result extends Component {
           .call();
         this.state.candidates.push({
           id: Number(candidate.candidateId),
-          header: candidate.header,
-          slogan: candidate.slogan,
+          choice: candidate.choice,
           voteCount: Number(candidate.voteCount),
         });
       }
@@ -114,8 +113,8 @@ export default class Result extends Component {
           ) : this.state.isElStarted && !this.state.isElEnded ? (
             <div className="container-item attention">
               <center>
-                <h3>The election is being conducted at the movement.</h3>
-                <p>Result will be displayed once the election has ended.</p>
+                <h3>The event is being conducted at the movement.</h3>
+                <p>Result will be displayed once the event has ended.</p>
                 <p>Go ahead and cast your vote {"(if not already)"}.</p>
                 <br />
                 <Link
@@ -155,8 +154,8 @@ function displayWinner(candidates) {
       <div className="container-winner">
         <div className="winner-info">
           <p className="winner-tag">Winner!</p>
-          <h2> {winner.header}</h2>
-          <p className="winner-slogan">{winner.slogan}</p>
+          <h2> {winner.choice}</h2>
+          {/* <p className="winner-slogan">{winner.slogan}</p> */}
         </div>
         <div className="winner-votes">
           <div className="votes-tag">Total Votes: </div>
@@ -174,7 +173,7 @@ export function displayResults(candidates) {
     return (
       <tr>
         <td>{candidate.id}</td>
-        <td>{candidate.header}</td>
+        <td>{candidate.choice}</td>
         <td>{candidate.voteCount}</td>
       </tr>
     );
@@ -182,11 +181,11 @@ export function displayResults(candidates) {
   return (
     <>
       {candidates.length > 0 ? (
-        <div className="container-main">{displayWinner(candidates)}</div>
+        <div className="container-main" hidden>{displayWinner(candidates)}</div>
       ) : null}
       <div className="container-main" style={{ borderTop: "1px solid" }}>
         <h2>Results</h2>
-        <small>Total candidates: {candidates.length}</small>
+        <small hidden>Total candidates: {candidates.length}</small>
         {candidates.length < 1 ? (
           <div className="container-item attention">
             <center>No candidates.</center>
@@ -197,7 +196,7 @@ export function displayResults(candidates) {
               <table>
                 <tr>
                   <th>Id</th>
-                  <th>Candidate</th>
+                  <th>Poll</th>
                   <th>Votes</th>
                 </tr>
                 {candidates.map(renderResults)}

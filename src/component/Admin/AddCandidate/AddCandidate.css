@@ -19,10 +19,10 @@
   padding: 0.5em;
 }
 .btn-add {
-  width: 25%;
+  width: 40%;
   padding: 1em;
   float: inline-end;
-  margin: 1em;
+  margin-right: 3em;
 }
 
 @media all and (max-width: 400px) {

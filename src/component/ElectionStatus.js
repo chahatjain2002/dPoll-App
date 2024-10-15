@@ -20,7 +20,7 @@ const ElectionStatus = (props) => {
       className="container-main"
       style={{ borderTop: "1px solid", marginTop: "0px" }}
     >
-      <h3>Election Status</h3>
+      <h3>Event Status</h3>
       <div style={electionStatus}>
         <p>Started: {props.elStarted ? "True" : "False"}</p>
         <p>Ended: {props.elEnded ? "True" : "False"}</p>

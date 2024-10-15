@@ -10,6 +10,8 @@ import AdminOnly from "../../AdminOnly";
 
 import "./AddCandidate.css";
 
+const options = ["I will attend", "I will not attend"];
+
 export default class AddCandidate extends Component {
   constructor(props) {
     super(props);
@@ -18,13 +20,11 @@ export default class AddCandidate extends Component {
       web3: null,
       account: null,
       isAdmin: false,
-      header: "",
-      slogan: "",
+      choice: "",
       candidates: [],
       candidateCount: undefined,
     };
   }
-  
 
   componentDidMount = async () => {
     // refreshing page only once
@@ -60,7 +60,7 @@ export default class AddCandidate extends Component {
         .getTotalCandidate()
         .call();
       this.setState({ candidateCount: Number(candidateCount) });
-      
+
       const admin = await this.state.ElectionInstance.methods.getAdmin().call();
       if (this.state.account === admin) {
         this.setState({ isAdmin: true });
@@ -68,19 +68,15 @@ export default class AddCandidate extends Component {
 
       // Loading Candidates details
       for (let index = 0; index < this.state.candidateCount; index++) {
-        
         const candidate = await this.state.ElectionInstance.methods
           .candidateDetails(index)
           .call();
-          
+
         this.state.candidates.push({
           id: Number(candidate.candidateId),
-          header: candidate.header,
-          slogan: candidate.slogan,
+          choice: candidate.choice,
         });
       }
-      console.log(this.state.candidates);
-      
 
       this.setState({ candidates: this.state.candidates });
     } catch (error) {
@@ -91,8 +87,9 @@ export default class AddCandidate extends Component {
       );
     }
   };
-  updateHeader = (event) => {
-    this.setState({ header: event.target.value });
+
+  updateChoice = (event) => {
+    this.setState({ choice: event.target.value });
   };
   updateSlogan = (event) => {
     this.setState({ slogan: event.target.value });
@@ -100,7 +97,7 @@ export default class AddCandidate extends Component {
 
   addCandidate = async () => {
     await this.state.ElectionInstance.methods
-      .addCandidate(this.state.header, this.state.slogan)
+      .addCandidate(this.state.choice)
       .send({ from: this.state.account, gas: 1000000 });
     window.location.reload();
   };
@@ -126,21 +123,25 @@ export default class AddCandidate extends Component {
       <>
         <NavbarAdmin />
         <div className="container-main">
-          <h2>Add a new candidate</h2>
-          <small>Total candidates: {this.state.candidateCount}</small>
+          <h2>UKIA Annual Fiesta</h2>
+          <small hidden={true}>Total candidates: {this.state.candidateCount}</small>
           <div className="container-item">
             <form className="form">
-              <label className={"label-ac"}>
-                Header
+              
+              {options.map((option, index) => (
+              <div key={index}>
                 <input
-                  className={"input-ac"}
-                  type="text"
-                  placeholder="eg. Marcus"
-                  value={this.state.header}
-                  onChange={this.updateHeader}
+                  type="radio"
+                  id={option}
+                  name="dynamicRadio"
+                  value={option}
+                  checked={this.state.choice === option}
+                  onChange={this.updateChoice}
                 />
-              </label>
-              <label className={"label-ac"}>
+                <label htmlFor={option}>{option}</label>
+              </div>
+              ))}
+              <label className={"label-ac"} style={{display:'none'}}>
                 Slogan
                 <input
                   className={"input-ac"}
@@ -152,9 +153,9 @@ export default class AddCandidate extends Component {
               </label>
               <button
                 className="btn-add"
-                disabled={
-                  this.state.header.length < 3 || this.state.header.length > 21
-                }
+                // disabled={
+                //   this.state.choice.length < 3 || this.state.header.length > 21
+                // }
                 onClick={this.addCandidate}
               >
                 Add
@@ -178,8 +179,8 @@ export function loadAdded(candidates) {
               overflow: "auto",
             }}
           >
-            {candidate.id}. <strong>{candidate.header}</strong>:{" "}
-            {candidate.slogan}
+            {candidate.id}. <strong>{candidate.choice}</strong>:{" "}
+            {/* {candidate.slogan} */}
           </div>
         </div>
       </>
@@ -188,11 +189,11 @@ export function loadAdded(candidates) {
   return (
     <div className="container-main" style={{ borderTop: "1px solid" }}>
       <div className="container-item info">
-        <center>Candidates List</center>
+        <center>Poll Options</center>
       </div>
       {candidates.length < 1 ? (
         <div className="container-item alert">
-          <center>No candidates added.</center>
+          <center>No options added.</center>
         </div>
       ) : (
         <div

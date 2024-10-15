@@ -98,7 +98,7 @@ export default class StartEnd extends Component {
       return (
         <>
           <Navbar />
-          <AdminOnly page="Start and end election page." />
+          <AdminOnly page="Start and end event page." />
         </>
       );
     }
@@ -107,11 +107,11 @@ export default class StartEnd extends Component {
         <NavbarAdmin />
         {!this.state.elStarted & !this.state.elEnded ? (
           <div className="container-item info">
-            <center>The election have never been initiated.</center>
+            <center>The event have never been initiated.</center>
           </div>
         ) : null}
         <div className="container-main">
-          <h3>Start or end election</h3>
+          <h3>Start or end event</h3>
           {!this.state.elStarted ? (
             <>
               <div className="container-item">

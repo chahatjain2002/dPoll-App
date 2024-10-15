@@ -30,14 +30,13 @@ contract Election {
     // Modeling a candidate
     struct Candidate {
         uint256 candidateId;
-        string header;
-        string slogan;
+        string choice;
         uint256 voteCount;
     }
     mapping(uint256 => Candidate) public candidateDetails;
 
     // Adding new candidates
-    function addCandidate(string memory _header, string memory _slogan)
+    function addCandidate(string memory _choice)
         public
         // Only admin can add
         onlyAdmin
@@ -45,8 +44,7 @@ contract Election {
         Candidate memory newCandidate =
             Candidate({
                 candidateId: candidateCount,
-                header: _header,
-                slogan: _slogan,
+                choice: _choice,
                 voteCount: 0
             });
         candidateDetails[candidateCount] = newCandidate;

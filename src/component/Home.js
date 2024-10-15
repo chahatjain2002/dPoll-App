@@ -134,9 +134,9 @@ export default class Home extends Component {
           {!this.state.elStarted & !this.state.elEnded ? (
             <div className="container-item info">
               <center>
-                <h3>The election has not been initialize.</h3>
+                <h3>The event has not been initialize.</h3>
                 {this.state.isAdmin ? (
-                  <p>Set up the election.</p>
+                  <p>Set up the event.</p>
                 ) : (
                   <p>Please wait..</p>
                 )}
@@ -152,11 +152,11 @@ export default class Home extends Component {
           <>
             <UserHome el={this.state.elDetails} />
           </>
-        ) : !this.state.isElStarted && this.state.isElEnded ? (
+        ) : !this.state.elStarted && this.state.elEnded ? (
           <>
             <div className="container-item attention">
               <center>
-                <h3>The Election ended.</h3>
+                <h3>The Event ended.</h3>
                 <br />
                 <Link
                   to="/Results"
@@ -254,11 +254,11 @@ export default class Home extends Component {
                 </div>
                 {/* about-election */}
                 <div className="about-election">
-                  <h3>About Election</h3>
+                  <h3>About Event</h3>
                   <div className="container-item center-items">
                     <div>
                       <label className="label-home">
-                        Election Title{" "}
+                        Event Title{" "}
                         {errors.electionTitle && <EMsg msg="*required" />}
                         <input
                           className="input-home"

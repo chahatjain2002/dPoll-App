@@ -61,11 +61,9 @@ export default class Registration extends Component {
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
-      this.setState({
-        web3: web3,
-        ElectionInstance: instance,
-        account: accounts[0],
-      });
+      this.state.web3 = web3;
+      this.state.ElectionInstance = instance;
+      this.state.account = accounts[0];
 
       // Admin account and verification
       const admin = await this.state.ElectionInstance.methods.getAdmin().call();
@@ -83,7 +81,7 @@ export default class Registration extends Component {
       const voterCount = await this.state.ElectionInstance.methods
         .getTotalVoter()
         .call();
-      this.setState({ voterCount: voterCount });
+      this.state.voterCount = Number(voterCount);
 
       // Loading all the voters
       for (let i = 0; i < this.state.voterCount; i++) {
@@ -135,6 +133,13 @@ export default class Registration extends Component {
   registerAsVoter = async () => {
     await this.state.ElectionInstance.methods
       .registerAsVoter(this.state.voterName, this.state.voterPhone)
+      .send({ from: this.state.account, gas: 1000000 });
+    window.location.reload();
+  };
+
+  updateVoterDetails = async () => {
+    await this.state.ElectionInstance.methods
+      .updateVoterDetails(this.state.voterName, this.state.voterPhone)
       .send({ from: this.state.account, gas: 1000000 });
     window.location.reload();
   };
@@ -201,8 +206,8 @@ export default class Registration extends Component {
                     <span style={{ color: "tomato" }}> Note: </span>
                     <br /> Make sure your account address and Phone number are
                     correct. <br /> Admin might not approve your account if the
-                    provided Phone number does not matches the account
-                    address registered in admins catalogue.
+                    provided Phone number does not matches the account address
+                    registered in admins catalogue.
                   </p>
                   <button
                     className="btn-add"
@@ -210,7 +215,11 @@ export default class Registration extends Component {
                       this.state.voterPhone.length !== 10 ||
                       this.state.currentVoter.isVerified
                     }
-                    onClick={this.registerAsVoter}
+                    onClick={
+                      this.state.currentVoter.isRegistered
+                        ? this.updateVoterDetails
+                        : this.registerAsVoter
+                    }
                   >
                     {this.state.currentVoter.isRegistered
                       ? "Update"

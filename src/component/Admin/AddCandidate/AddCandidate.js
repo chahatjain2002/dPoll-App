@@ -23,6 +23,7 @@ export default class AddCandidate extends Component {
       choice: "",
       candidates: [],
       candidateCount: undefined,
+      elDetails: {}
     };
   }
 
@@ -49,17 +50,21 @@ export default class AddCandidate extends Component {
       );
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
-      this.setState({
-        web3: web3,
-        ElectionInstance: instance,
-        account: accounts[0],
-      });
+      this.state.web3 = web3;
+      this.state.ElectionInstance = instance;
+      this.state.account = accounts[0];
 
       // Total number of candidates
       const candidateCount = await this.state.ElectionInstance.methods
         .getTotalCandidate()
         .call();
       this.setState({ candidateCount: Number(candidateCount) });
+
+      // Getting election details from the contract
+      const electionDetails = await this.state.ElectionInstance.methods
+      .getElectionDetails()
+      .call();
+      this.setState({elDetails:electionDetails.electionTitle});
 
       const admin = await this.state.ElectionInstance.methods.getAdmin().call();
       if (this.state.account === admin) {
@@ -123,7 +128,7 @@ export default class AddCandidate extends Component {
       <>
         <NavbarAdmin />
         <div className="container-main">
-          <h2>UKIA Annual Fiesta</h2>
+          <h2>{this.state.elDetails.electionTitle}</h2>
           <small hidden={true}>Total candidates: {this.state.candidateCount}</small>
           <div className="container-item">
             <form className="form">

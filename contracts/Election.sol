@@ -139,6 +139,14 @@ contract Election {
         voterCount += 1;
     }
 
+    // Request to update details of voter
+    function updateVoterDetails(string memory _name, string memory _phone) public {
+        Voter memory _voter = voterDetails[msg.sender];
+        _voter.name = _name;
+        _voter.phone = _phone;
+        voterDetails[msg.sender] = _voter;
+    }
+
     // Verify voter
     function verifyVoter(bool _verifedStatus, address voterAddress)
         public

@@ -59,11 +59,9 @@ export default class Voting extends Component {
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
-      this.setState({
-        web3: web3,
-        ElectionInstance: instance,
-        account: accounts[0],
-      });
+      this.state.web3 = web3;
+      this.state.ElectionInstance = instance;
+      this.state.account = accounts[0];
 
       // Get total number of candidates
       const candidateCount = await this.state.ElectionInstance.methods

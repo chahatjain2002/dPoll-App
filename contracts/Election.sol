@@ -119,6 +119,7 @@ contract Election {
         bool isVerified;
         bool hasVoted;
         bool isRegistered;
+        uint256 choice;
     }
     address[] public voters; // Array of address to store address of voters
     mapping(address => Voter) public voterDetails;
@@ -132,7 +133,8 @@ contract Election {
                 phone: _phone,
                 hasVoted: false,
                 isVerified: false,
-                isRegistered: true
+                isRegistered: true,
+                choice: 100000
             });
         voterDetails[msg.sender] = newVoter;
         voters.push(msg.sender);
@@ -163,6 +165,7 @@ contract Election {
         require(start == true);
         require(end == false);
         candidateDetails[candidateId].voteCount += 1;
+        voterDetails[msg.sender].choice = candidateId;
         voterDetails[msg.sender].hasVoted = true;
     }
 

@@ -26,6 +26,7 @@ export default class Voting extends Component {
       candidates: [],
       isElStarted: false,
       isElEnded: false,
+      elDetails: {},
       currentVoter: {
         address: undefined,
         name: null,
@@ -62,6 +63,12 @@ export default class Voting extends Component {
       this.state.web3 = web3;
       this.state.ElectionInstance = instance;
       this.state.account = accounts[0];
+
+      // Getting election details from the contract
+      const electionDetails = await this.state.ElectionInstance.methods
+        .getElectionDetails()
+        .call();
+      this.state.elDetails = electionDetails;
 
       // Get total number of candidates
       const candidateCount = await this.state.ElectionInstance.methods
@@ -123,25 +130,19 @@ export default class Voting extends Component {
         .send({ from: this.state.account, gas: 1000000 });
       window.location.reload();
     };
-    const confirmVote = (id, choice) => {
-      var r = window.confirm(
-        "Vote for " + choice + " with Id " + id + ".\nAre you sure?"
-      );
-      if (r === true) {
-        castVote(id);
-      }
+    const confirmVote = (id) => {
+      castVote(id);
     };
     return (
       <div className="container-item">
         <div className="candidate-info">
           <h2>
-            {candidate.choice} <small>#{candidate.id}</small>
+            {candidate.choice} <small>#{Number(candidate.id)}</small>
           </h2>
-          {/* <p className="slogan">{candidate.slogan}</p> */}
         </div>
         <div className="vote-btn-container">
           <button
-            onClick={() => confirmVote(candidate.id, candidate.choice)}
+            onClick={() => confirmVote(candidate.id)}
             className="vote-bth"
             disabled={
               !this.state.currentVoter.isRegistered ||
@@ -221,9 +222,11 @@ export default class Voting extends Component {
                 </>
               )}
               <div className="container-main">
-                <h2>UKIA Annual Fiesta Poll</h2>
+                <h2 className="title">{this.state.elDetails.electionTitle}</h2>
                 <h2 hidden>Candidates</h2>
-                <small hidden>Total candidates: {this.state.candidates.length}</small>
+                <small hidden>
+                  Total candidates: {this.state.candidates.length}
+                </small>
                 {this.state.candidates.length < 1 ? (
                   <div className="container-item attention">
                     <center>Not one to vote for.</center>

@@ -34,7 +34,10 @@ export default class Registration extends Component {
         hasVoted: false,
         isVerified: false,
         isRegistered: false,
+        choice: undefined,
       },
+      candidateCount: undefined,
+      candidates: [],
     };
   }
 
@@ -98,6 +101,7 @@ export default class Registration extends Component {
           hasVoted: voter.hasVoted,
           isVerified: voter.isVerified,
           isRegistered: voter.isRegistered,
+          choice: Number(voter.choice),
         });
       }
       this.setState({ voters: this.state.voters });
@@ -114,8 +118,27 @@ export default class Registration extends Component {
           hasVoted: voter.hasVoted,
           isVerified: voter.isVerified,
           isRegistered: voter.isRegistered,
+          choice: Number(voter.choice),
         },
       });
+
+      // Get total number of candidates
+      const candidateCount = await this.state.ElectionInstance.methods
+        .getTotalCandidate()
+        .call();
+      this.state.candidateCount = Number(candidateCount);
+
+      // Loading Candidates details
+      for (let i = 1; i <= this.state.candidateCount; i++) {
+        const candidate = await this.state.ElectionInstance.methods
+          .candidateDetails(i - 1)
+          .call();
+        this.state.candidates.push({
+          id: candidate.candidateId,
+          choice: candidate.choice,
+        });
+      }
+      this.state.candidates = this.state.candidates;
     } catch (error) {
       // Catch any errors for any of the above operations.
       console.error(error);
@@ -170,12 +193,9 @@ export default class Registration extends Component {
                   <div className="div-li">
                     <label className={"label-r"}>
                       Account Address
-                      <input
-                        className={"input-r"}
-                        type="text"
-                        value={this.state.account}
-                        style={{ width: "400px" }}
-                      />{" "}
+                      <p className="account-address">
+                        {this.state.account}
+                      </p>{" "}
                     </label>
                   </div>
                   <div className="div-li">
@@ -195,22 +215,16 @@ export default class Registration extends Component {
                       Phone number <span style={{ color: "tomato" }}>*</span>
                       <input
                         className={"input-r"}
-                        type="number"
+                        type="text"
+                        inputMode="numeric"
                         placeholder="eg. 9841234567"
                         value={this.state.voterPhone}
                         onChange={this.updateVoterPhone}
                       />
                     </label>
                   </div>
-                  <p className="note">
-                    <span style={{ color: "tomato" }}> Note: </span>
-                    <br /> Make sure your account address and Phone number are
-                    correct. <br /> Admin might not approve your account if the
-                    provided Phone number does not matches the account address
-                    registered in admins catalogue.
-                  </p>
                   <button
-                    className="btn-add"
+                    className="btn-registration"
                     disabled={
                       this.state.voterPhone.length !== 10 ||
                       this.state.currentVoter.isVerified
@@ -238,7 +252,8 @@ export default class Registration extends Component {
             >
               {loadCurrentVoter(
                 this.state.currentVoter,
-                this.state.currentVoter.isRegistered
+                this.state.currentVoter.isRegistered,
+                this.state.candidates
               )}
             </div>
             {this.state.isAdmin ? (
@@ -247,7 +262,7 @@ export default class Registration extends Component {
                 style={{ borderTop: "1px solid" }}
               >
                 <small>TotalVoters: {this.state.voters.length}</small>
-                {loadAllVoters(this.state.voters)}
+                {loadAllVoters(this.state.voters, this.state.candidates)}
               </div>
             ) : null}
           </>
@@ -256,7 +271,7 @@ export default class Registration extends Component {
     );
   }
 }
-export function loadCurrentVoter(voter, isRegistered) {
+export function loadCurrentVoter(voter, isRegistered, candidates) {
   return (
     <>
       <div
@@ -281,23 +296,33 @@ export function loadCurrentVoter(voter, isRegistered) {
             <td>{voter.phone}</td>
           </tr>
           <tr>
-            <th>Voted</th>
-            <td>{voter.hasVoted ? "True" : "False"}</td>
+            <th>Registered</th>
+            <td>{voter.isRegistered ? "Yes" : "No"}</td>
           </tr>
           <tr>
             <th>Verification</th>
-            <td>{voter.isVerified ? "True" : "False"}</td>
+            <td>
+              {voter.isVerified
+                ? "Verified"
+                : voter.isRegistered
+                ? "Pending"
+                : "Not Registered"}
+            </td>
           </tr>
-          <tr>
-            <th>Registered</th>
-            <td>{voter.isRegistered ? "True" : "False"}</td>
-          </tr>
+          {voter.hasVoted ? (
+            candidates[voter.choice] != null ? (
+              <tr>
+                <th>Voted</th>
+                <td>{candidates[voter.choice].choice}</td>
+              </tr>
+            ) : null
+          ) : null}
         </table>
       </div>
     </>
   );
 }
-export function loadAllVoters(voters) {
+export function loadAllVoters(voters, candidates) {
   const renderAllVoters = (voter) => {
     return (
       <>
@@ -316,17 +341,27 @@ export function loadAllVoters(voters) {
               <td>{voter.phone}</td>
             </tr>
             <tr>
-              <th>Voted</th>
-              <td>{voter.hasVoted ? "True" : "False"}</td>
-            </tr>
-            <tr>
-              <th>Verified</th>
-              <td>{voter.isVerified ? "True" : "False"}</td>
-            </tr>
-            <tr>
               <th>Registered</th>
-              <td>{voter.isRegistered ? "True" : "False"}</td>
+              <td>{voter.isRegistered ? "Yes" : "No"}</td>
             </tr>
+            <tr>
+              <th>Verification</th>
+              <td>
+                {voter.isVerified
+                  ? "Verified"
+                  : voter.isRegistered
+                  ? "Pending"
+                  : "Not Registered"}
+              </td>
+            </tr>
+            {voter.hasVoted ? (
+              candidates[voter.choice] != null ? (
+                <tr>
+                  <th>Voted</th>
+                  <td>{candidates[voter.choice].choice}</td>
+                </tr>
+              ) : null
+            ) : null}
           </table>
         </div>
       </>

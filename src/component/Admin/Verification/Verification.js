@@ -64,19 +64,18 @@ export default class Registration extends Component {
       const voterCount = await this.state.ElectionInstance.methods
         .getTotalVoter()
         .call();
-        this.state.voterCount = Number(voterCount);
-        
-      
+      this.state.voterCount = Number(voterCount);
+
       // Loading all the voters
       for (let index = 0; index < this.state.voterCount; index++) {
         const voterAddress = await this.state.ElectionInstance.methods
           .voters(index)
           .call();
-          
+
         const voter = await this.state.ElectionInstance.methods
           .voterDetails(voterAddress)
           .call();
-          
+
         this.state.voters.push({
           address: voter.voterAddress,
           name: voter.name,
@@ -116,7 +115,7 @@ export default class Registration extends Component {
               <tr>
                 <td>{voter.name}</td>
                 <td>{voter.phone}</td>
-                <td>{voter.hasVoted ? "True" : "False"}</td>
+                <td>{voter.hasVoted ? "Yes" : "No"}</td>
               </tr>
             </table>
           </div>
@@ -139,16 +138,16 @@ export default class Registration extends Component {
               <td>{voter.phone}</td>
             </tr>
             <tr>
-              <th>Voted</th>
-              <td>{voter.hasVoted ? "True" : "False"}</td>
+              <th>Registered</th>
+              <td>{voter.isRegistered ? "Yes" : "No"}</td>
             </tr>
             <tr>
               <th>Verified</th>
-              <td>{voter.isVerified ? "True" : "False"}</td>
+              <td>{voter.isVerified ? "Yes" : "No"}</td>
             </tr>
             <tr>
-              <th>Registered</th>
-              <td>{voter.isRegistered ? "True" : "False"}</td>
+              <th>Voted</th>
+              <td>{voter.hasVoted ? "Yes" : "No"}</td>
             </tr>
           </table>
           <div style={{}}>

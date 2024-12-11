@@ -64,7 +64,7 @@ export default class AddCandidate extends Component {
       const electionDetails = await this.state.ElectionInstance.methods
       .getElectionDetails()
       .call();
-      this.setState({elDetails:electionDetails.electionTitle});
+      this.state.elDetails = electionDetails;
 
       const admin = await this.state.ElectionInstance.methods.getAdmin().call();
       if (this.state.account === admin) {
@@ -96,9 +96,6 @@ export default class AddCandidate extends Component {
   updateChoice = (event) => {
     this.setState({ choice: event.target.value });
   };
-  updateSlogan = (event) => {
-    this.setState({ slogan: event.target.value });
-  };
 
   addCandidate = async () => {
     await this.state.ElectionInstance.methods
@@ -128,8 +125,7 @@ export default class AddCandidate extends Component {
       <>
         <NavbarAdmin />
         <div className="container-main">
-          <h2>{this.state.elDetails.electionTitle}</h2>
-          <small hidden={true}>Total candidates: {this.state.candidateCount}</small>
+          <h2 className="title">{this.state.elDetails.electionTitle}</h2>
           <div className="container-item">
             <form className="form">
               
@@ -146,21 +142,9 @@ export default class AddCandidate extends Component {
                 <label htmlFor={option}>{option}</label>
               </div>
               ))}
-              <label className={"label-ac"} style={{display:'none'}}>
-                Slogan
-                <input
-                  className={"input-ac"}
-                  type="text"
-                  placeholder="eg. It is what it is"
-                  value={this.state.slogan}
-                  onChange={this.updateSlogan}
-                />
-              </label>
+              
               <button
                 className="btn-add"
-                // disabled={
-                //   this.state.choice.length < 3 || this.state.header.length > 21
-                // }
                 onClick={this.addCandidate}
               >
                 Add
@@ -185,7 +169,6 @@ export function loadAdded(candidates) {
             }}
           >
             {candidate.id}. <strong>{candidate.choice}</strong>:{" "}
-            {/* {candidate.slogan} */}
           </div>
         </div>
       </>

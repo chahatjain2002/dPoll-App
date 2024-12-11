@@ -1,10 +1,18 @@
 .div-li {
   display: inline-grid;
 }
+
+.account-address {
+  margin: 1em 0 0 0;
+  padding: 0;
+  max-width: 22ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .input-r {
   margin: 0.5em;
   margin-left: 0;
-  padding: 1em;
+  padding: 1em 8em 1em 1em;
   display: block;
   overflow: scroll;
 }
@@ -13,18 +21,13 @@
   padding: 0.5em;
   display: block;
 }
-.btn-add {
-  width: 50%;
+.btn-registration {
+  width: 35%;
+  float:inline-end;
   padding: 1em;
-  float: inline-end;
-  margin: 1em;
+  margin:1em 4em 1em 1em;
 }
-.note {
-  width: 90%;
-  padding: 11px;
-  padding-left: 1px;
-  text-align: justify;
-  max-height: 111px;
-  overflow: auto;
-  line-height: 1.5em;
+
+.container-item {
+  display: grid;
 }
